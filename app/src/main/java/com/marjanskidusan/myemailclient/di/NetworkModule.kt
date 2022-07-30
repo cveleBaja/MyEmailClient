@@ -1,0 +1,56 @@
+package com.marjanskidusan.myemailclient.di
+
+import androidx.viewbinding.BuildConfig
+import com.marjanskidusan.myemailclient.data.data_source.remote.ApiService
+import com.marjanskidusan.myemailclient.utils.Constants
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+
+    private const val TIMEOUT_INTERVAL = 30L
+
+    @Singleton
+    @Provides
+    fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor()
+        .apply {
+            level =
+                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+        }
+
+    @Singleton
+    @Provides
+    fun provideHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .addInterceptor(httpLoggingInterceptor)
+            .readTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
+            .writeTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
+            .connectTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(Constants.baseUrl)
+        .client(okHttpClient)
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
+}

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyEmailClient</string>
+    <string name="emailPlaceholder">Enter your email</string>
+    <string name="passwordPlaceholder">Enter your password</string>
+    <string name="login">Login</string>
+    <string name="noInternet">No Internet connection</string>
+</resources>
