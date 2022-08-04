@@ -1,7 +1,9 @@
 package com.marjanskidusan.myemailclient.di
 
 import androidx.viewbinding.BuildConfig
+import com.marjanskidusan.myemailclient.data.data_source.local.dataStore.DataStoreManager
 import com.marjanskidusan.myemailclient.data.data_source.remote.ApiService
+import com.marjanskidusan.myemailclient.data.network.RequestInterceptor
 import com.marjanskidusan.myemailclient.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -30,12 +32,19 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun providesRequestInterceptor(dataStoreManager: DataStoreManager) =
+        RequestInterceptor(dataStoreManager)
+
+    @Singleton
+    @Provides
     fun provideHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
+        requestInterceptor: RequestInterceptor
     ): OkHttpClient =
         OkHttpClient
             .Builder()
             .addInterceptor(httpLoggingInterceptor)
+            .addInterceptor(requestInterceptor)
             .readTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
             .connectTimeout(TIMEOUT_INTERVAL, TimeUnit.SECONDS)
