@@ -2,5 +2,5 @@ package com.marjanskidusan.myemailclient.utils
 
 object Constants {
 
-    const val baseUrl = "https://"
+    const val baseUrl = "http://localhost:8080/"
 }

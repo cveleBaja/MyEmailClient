@@ -6,12 +6,12 @@ import androidx.activity.viewModels
 import com.marjanskidusan.myemailclient.R
 import com.marjanskidusan.myemailclient.databinding.ActivitySplashBinding
 import com.marjanskidusan.myemailclient.presentation.base.BaseActivity
-import com.marjanskidusan.myemailclient.presentation.ui.login.LoginActivity
+import com.marjanskidusan.myemailclient.presentation.ui.emails.EmailsActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SplashActivity: BaseActivity() {
+class SplashActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySplashBinding
     private val splashActivityViewModel: SplashActivityViewModel by viewModels()
@@ -22,23 +22,33 @@ class SplashActivity: BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupObservers()
+        setupNoInternetObserver()
+        setupLoginSuccessObserver()
     }
 
-    private fun setupObservers() {
-        splashActivityViewModel.hasInternetLiveData.observe(this) {
-            it?.let { hasInternet ->
-                if (!hasInternet) {
-                    showError(getString(R.string.noInternet))
+    private fun setupLoginSuccessObserver() {
+        splashActivityViewModel.loginSuccessLiveData.observe(this) {
+            it?.let { loginSuccess ->
+                if (!loginSuccess) {
                     return@observe
                 }
-                goToLoginScreen()
+
+                goToEmailsScreen()
             }
         }
     }
 
-    private fun goToLoginScreen() {
-        val intent = Intent(this, LoginActivity::class.java)
+    private fun setupNoInternetObserver() {
+        splashActivityViewModel.noInternetLiveData.observe(this) {
+            it?.let { noInternet ->
+                showError(getString(R.string.noInternet))
+            }
+        }
+    }
+
+    private fun goToEmailsScreen() {
+        val intent = Intent(this, EmailsActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }
