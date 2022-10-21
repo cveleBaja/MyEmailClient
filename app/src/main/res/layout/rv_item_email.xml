@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingVertical="@dimen/padding4"
+    android:paddingHorizontal="@dimen/padding16">
+
+    <TextView
+        android:id="@+id/tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        tools:text="1.1.2022." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="@dimen/padding8"
+        android:gravity="center"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/tv_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            tools:text="User User" />
+
+        <TextView
+            android:id="@+id/tv_tag"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:layout_weight=".1"
+            android:background="@drawable/tag_red"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingTop="@dimen/padding8" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_subject"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        tools:text="Subject" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:minLines="2"
+        tools:text="Content Content Content Content Content Content Content Content" />
+
+</LinearLayout>
