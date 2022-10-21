@@ -2,6 +2,7 @@ package com.marjanskidusan.myemailclient.data.network
 
 import com.marjanskidusan.myemailclient.data.data_source.local.dataStore.DataStoreManager
 import com.marjanskidusan.myemailclient.data.data_source.local.dataStore.DataStoreManagerImpl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -19,7 +20,7 @@ class RequestInterceptor @Inject constructor(private val dataStoreManager: DataS
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
-        return runBlocking {
+        return runBlocking(Dispatchers.IO) {
             val result = dataStoreManager.read(DataStoreManagerImpl.accessToken).first()
 
             val newRequest = if (result.isNotEmpty()) {

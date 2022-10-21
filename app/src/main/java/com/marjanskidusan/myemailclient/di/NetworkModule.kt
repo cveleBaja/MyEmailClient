@@ -1,6 +1,5 @@
 package com.marjanskidusan.myemailclient.di
 
-import androidx.viewbinding.BuildConfig
 import com.marjanskidusan.myemailclient.data.data_source.local.dataStore.DataStoreManager
 import com.marjanskidusan.myemailclient.data.data_source.remote.ApiService
 import com.marjanskidusan.myemailclient.data.network.RequestInterceptor
@@ -26,8 +25,7 @@ object NetworkModule {
     @Provides
     fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor()
         .apply {
-            level =
-                if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
     @Singleton
