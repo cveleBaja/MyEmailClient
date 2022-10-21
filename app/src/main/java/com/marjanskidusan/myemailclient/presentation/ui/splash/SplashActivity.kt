@@ -1,12 +1,11 @@
 package com.marjanskidusan.myemailclient.presentation.ui.splash
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import com.marjanskidusan.myemailclient.R
 import com.marjanskidusan.myemailclient.databinding.ActivitySplashBinding
 import com.marjanskidusan.myemailclient.presentation.base.BaseActivity
-import com.marjanskidusan.myemailclient.presentation.ui.emails.EmailsActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -22,33 +21,32 @@ class SplashActivity : BaseActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupNoInternetObserver()
-        setupLoginSuccessObserver()
+        setupSplashStateObserver()
     }
 
-    private fun setupLoginSuccessObserver() {
-        splashActivityViewModel.loginSuccessLiveData.observe(this) {
-            it?.let { loginSuccess ->
-                if (!loginSuccess) {
-                    return@observe
+    private fun setupSplashStateObserver() {
+        splashActivityViewModel.splashStateLiveData.observe(this) {
+            it?.let { splashState ->
+                when (splashState) {
+                    is SplashActivityViewModel.SplashState.NoInternetConnection -> showError(getString(R.string.noInternet))
+                    is SplashActivityViewModel.SplashState.Success -> {
+                        hideProgressIndicator()
+                        goToEmailsScreen()
+                    }
+                    is SplashActivityViewModel.SplashState.Error -> {
+                        hideProgressIndicator()
+                        showError(splashState.errorMessage)
+                    }
                 }
-
-                goToEmailsScreen()
             }
         }
     }
-
-    private fun setupNoInternetObserver() {
-        splashActivityViewModel.noInternetLiveData.observe(this) {
-            it?.let { noInternet ->
-                showError(getString(R.string.noInternet))
-            }
-        }
+    
+    private fun hideProgressIndicator() {
+        binding.progressIndicator.visibility = View.GONE
     }
 
     private fun goToEmailsScreen() {
-        val intent = Intent(this, EmailsActivity::class.java)
-        startActivity(intent)
-        finish()
+        // TODO: Go to next screen
     }
 }

@@ -1,6 +1,5 @@
 package com.marjanskidusan.myemailclient.presentation.ui.splash
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,10 +25,14 @@ class SplashActivityViewModel @Inject constructor(
         private const val delayInMS = 5000L
     }
 
-    private var _noInternetLiveData = MutableLiveData<Boolean?>()
-    val noInternetLiveData get() = _noInternetLiveData
-    private var _loginSuccessLiveData = MutableLiveData<Boolean?>()
-    val loginSuccessLiveData get() = _loginSuccessLiveData
+    sealed class SplashState {
+        object NoInternetConnection : SplashState()
+        object Success : SplashState()
+        class Error(val errorMessage: String): SplashState()
+    }
+
+    private var _splashStateLiveData = MutableLiveData<SplashState?>()
+    val splashStateLiveData get() = _splashStateLiveData
 
     init {
         checkInternetConnection()
@@ -40,17 +44,23 @@ class SplashActivityViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (!hasInternet) {
                 delay(delayInMS)
-                _noInternetLiveData.value = false
+                withContext(Dispatchers.Main) {
+                    _splashStateLiveData.value = SplashState.NoInternetConnection
+                }
                 return@launch
             }
 
             val request = LoginRequestDto("user@gmail.com", "user")
             when (val result = authRepository.login(request)) {
                 is Result.Success -> {
-                    _loginSuccessLiveData.value = true
+                    withContext(Dispatchers.Main) {
+                        _splashStateLiveData.value = SplashState.Success
+                    }
                 }
                 is Result.Error -> {
-                    Log.i("TAG", "checkInternetConnection: ${result.message}")
+                    withContext(Dispatchers.Main) {
+                        _splashStateLiveData.value = SplashState.Error(result.message!!)
+                    }
                 }
             }
         }
