@@ -3,4 +3,7 @@
     <dimen name="standardPagePadding">20dp</dimen>
     <dimen name="padding16">16dp</dimen>
     <dimen name="padding24">24dp</dimen>
+    <dimen name="padding8">8dp</dimen>
+    <dimen name="standardRadius">16dp</dimen>
+    <dimen name="padding4">4dp</dimen>
 </resources>
