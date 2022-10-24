@@ -1,11 +1,13 @@
 package com.marjanskidusan.myemailclient.presentation.ui.splash
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import com.marjanskidusan.myemailclient.R
 import com.marjanskidusan.myemailclient.databinding.ActivitySplashBinding
 import com.marjanskidusan.myemailclient.presentation.base.BaseActivity
+import com.marjanskidusan.myemailclient.presentation.ui.emails.EmailsActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -47,6 +49,8 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun goToEmailsScreen() {
-        // TODO: Go to next screen
+        val intent = Intent(this, EmailsActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

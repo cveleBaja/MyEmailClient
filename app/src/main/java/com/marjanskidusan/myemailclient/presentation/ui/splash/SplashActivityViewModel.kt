@@ -1,5 +1,6 @@
 package com.marjanskidusan.myemailclient.presentation.ui.splash
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,25 +45,36 @@ class SplashActivityViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             if (!hasInternet) {
                 delay(delayInMS)
-                withContext(Dispatchers.Main) {
-                    _splashStateLiveData.value = SplashState.NoInternetConnection
-                }
+                setSplashState(SplashState.NoInternetConnection)
                 return@launch
             }
 
-            val request = LoginRequestDto("user@gmail.com", "user")
-            when (val result = authRepository.login(request)) {
-                is Result.Success -> {
-                    withContext(Dispatchers.Main) {
-                        _splashStateLiveData.value = SplashState.Success
-                    }
-                }
-                is Result.Error -> {
-                    withContext(Dispatchers.Main) {
-                        _splashStateLiveData.value = SplashState.Error(result.message!!)
-                    }
-                }
+            val isUserLoggedIn = authRepository.isUserLoggedIn()
+            if (isUserLoggedIn) {
+                setSplashState(SplashState.Success)
+                return@launch
             }
+
+            login()
+        }
+    }
+
+    private suspend fun login() {
+        val request = LoginRequestDto("user@gmail.com", "user")
+
+        when (val result = authRepository.login(request)) {
+            is Result.Success -> {
+                setSplashState(SplashState.Success)
+            }
+            is Result.Error -> {
+                setSplashState(SplashState.Error(result.message!!))
+            }
+        }
+    }
+
+    private suspend fun setSplashState(state: SplashState) {
+        withContext(Dispatchers.Main) {
+            _splashStateLiveData.value = state
         }
     }
 }
