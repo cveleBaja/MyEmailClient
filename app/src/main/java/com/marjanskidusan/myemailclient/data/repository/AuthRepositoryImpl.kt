@@ -6,6 +6,7 @@ import com.marjanskidusan.myemailclient.data.data_source.remote.ApiService
 import com.marjanskidusan.myemailclient.data.model.LoginRequestDto
 import com.marjanskidusan.myemailclient.domain.repository.AuthRepository
 import com.marjanskidusan.myemailclient.utils.Result
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -22,5 +23,11 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Result.Error(e.localizedMessage ?: "")
         }
+    }
+
+    override suspend fun isUserLoggedIn(): Boolean {
+        val token = dataStoreManager.read(DataStoreManagerImpl.accessToken).first()
+
+        return token != ""
     }
 }

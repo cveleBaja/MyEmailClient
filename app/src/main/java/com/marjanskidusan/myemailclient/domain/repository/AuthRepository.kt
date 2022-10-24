@@ -6,4 +6,5 @@ import com.marjanskidusan.myemailclient.utils.Result
 interface AuthRepository {
 
     suspend fun login(request: LoginRequestDto): Result<Unit>
+    suspend fun isUserLoggedIn(): Boolean
 }
